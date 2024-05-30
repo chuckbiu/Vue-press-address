@@ -6,28 +6,42 @@ import { viteBundler } from '@vuepress/bundler-vite'
 export default defineUserConfig({
   lang: 'en-US',
 
-  title: '金总',
-  description: 'My first VuePress Site',
+  title: 'chuck',
+  description: '道阻且长，行则将至',
 
   theme: defaultTheme({
-    logo: 'https://vuejs.press/images/hero.png',
+    logo: 'https://raw.githubusercontent.com/chuckbiu/tuchuang_img/main/img_picons8-互联网-64.png',
 
     navbar: [
-      '/',
+      
       {
-        text: 'Article',
-        link: '/article/',
+        text: '本站指南',
+        link: '/',
       },
       {
-        text: 'Category',
+        text: '技术分享',
+        link: '/article/',
+        children: [
+          {
+            text: '前端',
+            link: '/article/web/'
+          },
+          {
+            text: 'Java',
+            link: '/article/java/'
+          }
+        ]
+      },
+      {
+        text: '兴趣',
         link: '/category/',
       },
       {
-        text: 'Tag',
+        text: '生活',
         link: '/tag/',
       },
       {
-        text: 'Timeline',
+        text: '时间线',
         link: '/timeline/',
       },
     ],
