@@ -2,18 +2,23 @@ import { blogPlugin } from '@vuepress/plugin-blog'
 import { defaultTheme } from '@vuepress/theme-default'
 import { defineUserConfig } from 'vuepress'
 import { viteBundler } from '@vuepress/bundler-vite'
+// 2d人物
+import { oml2dPlugin } from 'vuepress-plugin-oh-my-live2d';
 
 export default defineUserConfig({
   lang: 'en-US',
-
-  title: 'chuck',
+  head: [["link", {
+    rel: 'icon',
+    href: '/images/logo.png'
+  }]],
+  title: 'gear',
   description: '道阻且长，行则将至',
 
   theme: defaultTheme({
-    logo: 'https://raw.githubusercontent.com/chuckbiu/tuchuang_img/main/img_picons8-互联网-64.png',
+    logo: '/images/logo.png',
 
     navbar: [
-      
+
       {
         text: '本站指南',
         link: '/',
@@ -24,7 +29,17 @@ export default defineUserConfig({
         children: [
           {
             text: '前端',
-            link: '/article/web/'
+            link: '/article/web/',
+            children: [
+              {
+                text: 'React',
+                link: '/article/web/react/'
+              },
+              {
+                text: 'Vue',
+                link: '/article/web/vue/'
+              }
+            ]
           },
           {
             text: 'Java',
@@ -149,6 +164,19 @@ export default defineUserConfig({
       ],
       hotReload: true,
     }),
+    oml2dPlugin({
+      // 在这里配置选项
+      models: [
+        {
+          "path": "https://model.oml2d.com/Pio/model.json",
+          "scale": 0.4,
+          "position": [0, 50],
+          "stageStyle": {
+            "height": 300
+          }
+        }
+      ]
+    })
   ],
 
   bundler: viteBundler(),

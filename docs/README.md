@@ -1,12 +1,12 @@
 ---
 home: true
 title: web
-heroImage: https://raw.githubusercontent.com/chuckbiu/tuchuang_img/main/img_p下载.png
+heroImage: /images/background.png
 heroHeight: 280
 heroImageDark: https://raw.githubusercontent.com/chuckbiu/tuchuang_img/main/img_p1349140jMnt.jpg
 # 首页的大标题。
 heroText: 道阻且长，行则将至
-tagline: 所学
+tagline: 莫愁千里路，自有到来风（唐·钱珝）
 # actions:
 #   - text: Get Started
 #     link: /getting-started.html
@@ -30,7 +30,7 @@ features:
   - title: Node
     details: Default bundler is Vite, while Webpack is also supported. Choose the one you like!
 
-footer: MIT Licensed | Copyright © 2018-present
+footer: MIT Licensed | Copyright © 2021-present
 ---
 <!-- 
 This is the content of home page. Check [Home Page Docs][default-theme-home] for more details.
