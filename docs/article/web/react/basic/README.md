@@ -47,7 +47,7 @@ react-dom会将jsx最终渲染成原生的控件（比如Android中的Button，i
 
 计算器案例
 
-![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/05c369827e234a21ad06ba96de5deb49~tplv-k3u1fbpfcp-watermark.image?)
+![](.\img\05c369827e234a21ad06ba96de5deb49~tplv-k3u1fbpfcp-watermark.png)
 
 #### 0 组件分类
 

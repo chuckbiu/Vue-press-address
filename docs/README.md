@@ -1,6 +1,6 @@
 ---
 home: true
-title: web
+title: chuck
 heroImage: /images/background.png
 heroHeight: 280
 heroImageDark: https://raw.githubusercontent.com/chuckbiu/tuchuang_img/main/img_p1349140jMnt.jpg

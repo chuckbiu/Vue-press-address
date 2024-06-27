@@ -32,9 +32,16 @@ export default defineUserConfig({
             link: '/article/web/',
             children: [
               {
-                text: 'React',
-                link: '/article/web/react/'
+                text: 'React基础',
+                link: '/article/web/react/basic/'
+
               },
+
+              {
+                text: 'React进阶',
+                link: '/article/web/react/jinjie/'
+              },
+
               {
                 text: 'Vue',
                 link: '/article/web/vue/'
