@@ -34,23 +34,34 @@ export default defineUserConfig({
               {
                 text: 'React基础',
                 link: '/article/web/react/basic/'
-
               },
-
               {
                 text: 'React进阶',
                 link: '/article/web/react/jinjie/'
               },
-
               {
                 text: 'Vue',
                 link: '/article/web/vue/'
+              },
+              {
+                text: '性能优化',
+                link: '/article/web/webyouhua/google_font/'
               }
             ]
           },
           {
             text: 'Java',
             link: '/article/java/'
+          },
+          {
+            text: '工具',
+            link: '/article/tools/',
+            children: [
+              {
+                text: 'Git',
+                link: '/article/tools/git/'
+              }
+            ]
           }
         ]
       },
