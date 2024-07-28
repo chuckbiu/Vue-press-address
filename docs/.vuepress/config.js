@@ -20,15 +20,15 @@ export default defineUserConfig({
     navbar: [
 
       {
-        text: '本站指南',
+        text: '首页',
         link: '/',
       },
       {
-        text: '技术分享',
+        text: '前端',
         link: '/article/',
         children: [
           {
-            text: '前端',
+            text: 'js框架',
             link: '/article/web/',
             children: [
               {
@@ -42,16 +42,20 @@ export default defineUserConfig({
               {
                 text: 'Vue',
                 link: '/article/web/vue/'
-              },
-              {
-                text: '性能优化',
-                link: '/article/web/webyouhua/google_font/'
               }
             ]
           },
           {
-            text: 'Java',
-            link: '/article/java/'
+            
+              text: '性能优化',
+              link: '/article/web/webyouhua/',
+              children: [
+                {
+                  text: '字体优化-谷歌字体优化',
+                  link: '/article/web/webyouhua/google_font/'
+                }
+              ]
+            
           },
           {
             text: '工具',
@@ -66,11 +70,30 @@ export default defineUserConfig({
         ]
       },
       {
-        text: '兴趣',
+        text: '后端',
         link: '/category/',
+        children: [
+          {
+            link: '/category/server/',
+            children: [
+              {
+                text: 'Node',
+                link: '/category/server/node/'
+              },
+              {
+                text: 'Java',
+                link: '/category/server/java/'
+              },
+              {
+                text: 'Python 基础语法',
+                link: '/category/server/python/'
+              }
+            ]
+          }
+        ]
       },
       {
-        text: '生活',
+        text: '其他领域',
         link: '/tag/',
       },
       {
