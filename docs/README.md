@@ -7,6 +7,14 @@ heroImageDark: https://raw.githubusercontent.com/chuckbiu/tuchuang_img/main/img_
 # 首页的大标题。
 heroText: 道阻且长，行则将至
 tagline: 莫愁千里路，自有到来风（唐·钱珝）
+# 按钮
+# actions:
+#   - text: 快速上手
+#     link: /zh/guide/getting-started.html
+#     type: primary
+#   - text: 项目简介
+#     link: /zh/guide/introduction.html
+#     type: secondary
 # actions:
 #   - text: Get Started
 #     link: /getting-started.html
@@ -18,19 +26,20 @@ tagline: 莫愁千里路，自有到来风（唐·钱珝）
 
 features:
   - title: HTML5
-    details: Minimal setup with markdown-centered project structure helps you focus on writing.
+    details: 语义化标签，新特性
   - title: CSS
-    details: Enjoy the dev experience of Vue, use Vue components in markdown, and develop custom themes with Vue.
+    details: less, scss, flex布局，grid布局
   - title: JS
-    details: VuePress generates pre-rendered static HTML for each page, and runs as an SPA once a page is loaded.
+    details: 作用域，作用域链，闭包，const, let...
   - title: Vue
-    details: Providing a default theme out of the box. You can also choose a community theme or create your own one.
+    details: 生命周期，组件，指令，计算属性，侦听器，过滤器，插件，路由，Vuex, pinia
   - title: React
-    details: Flexible plugin API, allowing plugins to provide lots of plug-and-play features for your site.
+    details: ReactHooks, Redux, ReactRouter, MobX...
   - title: Node
-    details: Default bundler is Vite, while Webpack is also supported. Choose the one you like!
+    details: express, Mysql...
 
 footer: MIT Licensed | Copyright © 2021-present
+lastUpdated: true
 ---
 <!-- 
 This is the content of home page. Check [Home Page Docs][default-theme-home] for more details.

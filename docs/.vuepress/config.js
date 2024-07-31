@@ -11,9 +11,9 @@ export default defineUserConfig({
     rel: 'icon',
     href: '/images/logo.png'
   }]],
-  title: 'gear',
+  title: '迷失的小狗',
   description: '道阻且长，行则将至',
-
+  sidebarDepth: 5,
   theme: defaultTheme({
     logo: '/images/logo.png',
 
@@ -25,7 +25,8 @@ export default defineUserConfig({
       },
       {
         text: '前端',
-        link: '/article/',
+        // link: '/',
+        prefix: '/article/',
         children: [
           {
             text: 'js框架',
@@ -46,16 +47,26 @@ export default defineUserConfig({
             ]
           },
           {
-            
-              text: '性能优化',
-              link: '/article/web/webyouhua/',
-              children: [
-                {
-                  text: '字体优化-谷歌字体优化',
-                  link: '/article/web/webyouhua/google_font/'
-                }
-              ]
-            
+            text: 'js',
+            link: '/article/js/',
+            children: [
+              {
+                text: 'JavaScript进阶',
+                link: '/article/js/js高级知识/'
+              },
+            ]
+          },
+          {
+
+            text: '性能优化',
+            link: '/article/web/webyouhua/',
+            children: [
+              {
+                text: '字体优化-谷歌字体优化',
+                link: '/article/web/webyouhua/google_font/'
+              }
+            ]
+
           },
           {
             text: '工具',
@@ -74,7 +85,7 @@ export default defineUserConfig({
         link: '/category/',
         children: [
           {
-            link: '/category/server/',
+            // link: '/category/server/',
             children: [
               {
                 text: 'Node',
@@ -94,11 +105,24 @@ export default defineUserConfig({
       },
       {
         text: '其他领域',
-        link: '/tag/',
+        link: '/other/',
+        children: [
+          { text: '阅读', link: '/other/ruanzhishi/reading/' }
+        ]
       },
       {
-        text: '时间线',
-        link: '/timeline/',
+        text: '社交',
+        link: '#',
+        children: [
+          {
+            text: 'Github',
+            link: 'https://github.com/chuckbiu'
+          },
+          {
+            text: '微信: yunzilou_ui',
+            link: '#'
+          }
+        ]
       },
     ],
   }),
