@@ -89,7 +89,7 @@ export default defineUserConfig({
             children: [
               {
                 text: 'Node',
-                link: '/category/server/node/'
+                link: '/category/server/node/express/'
               },
               {
                 text: 'Java',
