@@ -52,9 +52,11 @@ function handleClick() {
 
 ```react
 useEffect(() => {
+    api => ddd
     //effect
     return () => {
     //cleanup
+        
     //可以做销毁工作
     };
 }, [依赖的状态;空数组,表示不依赖])
@@ -77,7 +79,7 @@ let id = props.match.params.myid
 },[id])
 ```
 
-**useEffect**和**useLayoutEffect**有什么区别？
+**useEffect**和**useLayoutEffect**有什么区别？ 
 
 ​	**简单来说就是调用时机不同，** useLayoutEffect **和原来** componentDidMount **&** componentDidUpdate **一致，在**
 
@@ -96,6 +98,8 @@ However, we recommend starting with useEffect first and only trying useLayoutEff
 放在 **useLayoutEffect** 里。在这里做点dom操作，这些dom修改会和 react 做出的更改一起被一次性渲染到屏幕
 
 上，只有一次回流、重绘的代价。
+
+为啥 useLayoutEffect 吗
 
 #### 	1.3 **useCallback(**记忆函数)
 
@@ -219,7 +223,7 @@ function MyComponent() {
 1. 当前的 state，首次渲染时为你提供的 初始值。
 2. `dispatch` 函数，让你可以根据交互修改 state。
 
-### 2 router路由 --react-router-dom@5
+### 2 router路由 --react-router-dom
 
 #### 	**(1)** **路由方法导入**
 
@@ -233,7 +237,7 @@ import {
 } from "react-router-dom";
 ```
 
-#### **(2)** **定义路由以及重定向**
+#### **(2)** **定义路由以及重定向** @5
 
 ```react
 <HashRouter>
@@ -247,18 +251,43 @@ import {
         {/* 页面不对处理 */}
         <Route path="*" component={NotFound}/> */}
     </Switch>
-</HashRouter>
+</HashRouter>		
 ```
 
-​		  b. exact 精确匹配 (Redirect 即使使用了exact, 外面还要嵌套Switch 来用)
+@6 版本 得加routes
 
- 		c. Warning: Hash history cannot PUSH the same path; a new entry will not be added to the history
+```react
+<HashRouter>
+	<routes>
+    	<Switch>
+            <Route path="/films" component={Films}/>
+            <Route path="/cinemas" component={Cinemas}/>
+            <Route path="/center" component={Center}/>
+            {/* 重定向 */}
+            <Redirect from="/" to="/films" />
+            {/* <Redirect from="/" to="/films" exact/>
+            {/* 页面不对处理 */}
+            <Route path="*" component={NotFound}/> */}
+   		</Switch>
+   	<routes/>
+</HashRouter>		
+```
 
-​				stack,这个警告只有在hash 模式会出现。
+使用Navigate 组件替代 @6      *不匹配 就一定会走/films
+
+```react
+ <Route path='*' element={<Navigate to='/films'/>}></Route>
+```
+
+  b. exact 精确匹配 (Redirect 即使使用了exact, 外面还要嵌套Switch 来用)
+
+ 		c. Warning: Hash history cannot PUSH the same path; a new entry will not be added to the history stack
+
+​	这个警告只有在hash 模式会出现。
 
 #### 		**(3)** **嵌套路由**
 
-​		在一级路由组件中书写
+​		在一级路由组件中书写 @5
 
 ```react
 <Switch>
@@ -268,14 +297,41 @@ import {
 </Switch>
 ```
 
+​		在二级路由组件中书写 @6
+
+```react
+  <Routes>
+    <Route path="/FilmsCom" element={<FilmsCom />} >
+        <Route path="/FilmsCom/conimgsoon" element={<ConimgSoon />}></Route>
+        <Route path="/FilmsCom/nowplaying" element={<NowplayIng />}></Route>
+    </Route>
+    <Route path="/CineMas" element={<CineMas />} />
+    <Route path="/CenTer" element={<CenTer />} />
+    <Route path="/" element={<Navigate to='/FilmsCom'/>} />
+    <Route path="*" element={<ErrorPage />} />
+  </Routes>
+```
+
 #### 		**(4)** 路由跳转方式
 
 ​		a. 声明式导航
+
+​		navlink 比 link 多个高亮属性@5
 
 ```react
 <NavLink to="/films" activeClassName="active">films</NavLink>
 <NavLink to="/cinemas" activeClassName="active">cinemas</NavLink>
 <NavLink to="/center" activeClassName="active">center</NavLink>
+```
+
+​	  NavLink@6
+
+```react
+<NavLink to="/CenTer" className={({ isActive }) => {
+   return isActive ? '' : ''
+}}>
+	center
+</NavLink>
 ```
 
 ​		b. 编程式导航
@@ -306,9 +362,9 @@ const Navigation = () => (
 export default Navigation;
 ```
 
-			2. 使用 `useNavigate` 钩子
+	2. 使用 `useNavigate` 钩子 @6
 
-​		`useNavigate` 是 React Router v6 引入的一个钩子，用于编程式导航。它替代了 v5 的 `useHistory` 钩子。
+​		`useNavigate` 是 React Router v6 引入的一个钩子，用于编程式导航。它替代了 v5 的 `useHistory` 钩子。 
 
 ```react
 import { useNavigate } from 'react-router-dom';
@@ -326,7 +382,7 @@ const MyComponent = () => {
 export default MyComponent;
 ```
 
-			3. 使用 `<Navigate>` 组件
+	3. 使用 `<Navigate>` 组件 @6
 
 ​		`<Navigate>` 组件用于在渲染时重定向用户到另一个路径。它适用于需要在 JSX 中直接进行条件性导航的场景。
 
@@ -396,9 +452,42 @@ export default MyComponent;
 (1) query 传参
 this.props.history.push({ pathname : '/user' ,query : { day: 'Friday'} })
 this.props.location.query.day
-(2) state 传参 有一种问题 得有缓存
+(2) state 传参
 this.props.history.push({ pathname:'/user',state:{day : 'Friday' } })
 this.props.location.state.day
+```
+
+​		v6 版本
+
+```js
+//url传参
+const navigate = useNavigate()
+navigate(`/detail?id=${id}`)
+
+//获取url参数
+import { useSearchParams } from 'react-router-dom'
+const [searchParams, setSearchParams] = useSearchParams()
+// 获取参数
+searchParams.get('id')
+// 判断参数是否存在
+searchParams.has('id')
+// 同时页面内也可以用set方法来改变路由
+setSearchParams({"id":2})
+
+```
+
+#### **(5.2)** **动态路由**
+
+```js
+//跳转页面,路由传参
+navigate(`/detail/${id}`)
+
+//配置动态路由
+<Route path="/detail/:id" element={<Detail/>}/>
+    
+//获取动态路由参数 通过useParams钩子
+ 
+const {id} = useParams()
 ```
 
 #### 	**(6)** **路由拦截**
@@ -407,23 +496,122 @@ this.props.location.state.day
 <Route path="/center" render={()=>isAuth()?<Center/>:<Login/>}/>
 ```
 
+##### **(6.1)** **路由拦截** v6
+
+```react
+ <Route path="/center" element={
+	<AuthComponent>
+		<Center></Center>
+	</AuthComponent>
+}/>
+
+function AuthComponent({children}){
+    return localStorage.getItem("token")?children:<Redirect to="/login"/>
+}
+```
+
+##### （6.2） 路由懒加载 
+
+```react
+const LazyLoad = (path) => {
+    const Comp = React.lazy(() => import(`../views/${path}`))
+    return (
+        <React.Suspense fallback={<>加载中...</>}>
+            <Comp />
+        </React.Suspense>
+    )
+}
+
+```
+
+```react
+export default function MRouter() {
+    return (
+        <Routes>
+            {/* <Route index element={<Film/>}/> */}
+            <Route path="/film" element={LazyLoad("Film")}>
+                {/* <Route index  element={<Nowplaying/>}/> */}
+                <Route path="" element={<Redirect to="/film/nowplaying"/>}/>
+                <Route path="nowplaying" element={LazyLoad("film/Nowplaying")}/>
+                <Route path="comingsoon" element={LazyLoad("film/Comingsoon")}/>
+            </Route>
+            <Route path="/cinema" element={LazyLoad("Cinema")}/>
+            <Route path="/login" element={LazyLoad("Login")}/>
+            <Route path="/center" element={<AuthComponent>
+                {LazyLoad("Center")}
+            </AuthComponent>}/>
+            <Route path="/detail/:id" element={LazyLoad("Detail")}/>
+            <Route path="/" element={<Redirect to="/film"/>}/>
+            <Route path="*" element={LazyLoad("NotFound")}/>
+        </Routes>
+    )
+}
+```
+
+
+
 #### 	**(7)** **路由器分类**
 
 ​		`<BrowserRouter>`使用干净的 URL 将当前位置存储在浏览器的地址栏中，并使用浏览器的内置历史记录堆栈进行导航。
 
-​		`<HashRouter>`用于 Web 浏览器，当 URL 由于某种原因不应（或无法）发送到服务器时。在某些共享主机情况下，您可能会发生这种情况，因为您无法完全控制服务器。在这些情况下，`<HashRouter>`可以将当前位置存储在`hash`当前 URL 的一部分中，因此永远不会将其发送到服务器。
+​		`<HashRouter>`用于 Web 浏览器，当 URL 由于某种原因不应（或无法）发送到服务器时。在某些共享主机情况下，您可能会发生这种情况，因为您无法完全控制服务器。在这些情况下，`<HashRouter>`可以将当前位置存储在`hash`当前 URL 的一部分中，因此永远不会将其发送到服务器。带有# 符号 
 
 #### 		**(8) withRouter**的应用与原理
 
 ```react
 import { withRouter } from "react-router";
+
 withRouter(MyComponent);
+
 withRouter(connect(...)(MyComponent))
 ```
 
 ​		将该组件包裹进Route里面, 然后通过props就可以访问到history, location, match三个对象
 
+#### 		(9) useRoutes钩子配置路由
 
+```react
+export default function MRouter() {
+    const element = useRoutes([
+        {path:"/film",element:LazyLoad("Film"),children:[
+            {
+                path:"",
+                element:<Redirect to="/film/nowplaying"/>
+            },
+            {
+                path:"nowplaying",
+                element:LazyLoad("film/Nowplaying")
+            },
+            {
+                path:"comingsoon",
+                element:LazyLoad("film/Comingsoon")
+            }
+        ]},
+        {
+            path:"/cinema",element:LazyLoad("Cinema")
+        },
+        {
+            path:"/login",element:LazyLoad("Login")
+        },
+        {
+            path:"/center",element:<AuthComponent>
+            {LazyLoad("Center")}
+            </AuthComponent>
+        },
+        {
+            path:"/detail/:id",element:LazyLoad("Detail")
+        },
+        {
+            path:"/",element:<Redirect to="/film"/>
+        },
+        {
+            path:"*",element:LazyLoad("NotFound")
+        },
+    ])
+
+    return element
+}
+```
 
 ### 3  反向代理
 
@@ -552,7 +740,7 @@ function createStore(reducer){
 }
 ```
 
-**5. reducer** **扩展**
+#### **5.2 reducer** **扩展**
 
 ​	如果如果不同的action所处理的属性之间没有联系，我们可以把 Reducer 函数拆分。不同的函数
 
@@ -573,13 +761,13 @@ const reducer = combineReducers({
 }
 ```
 
-### 	6 实例![](.\assets\Snipaste_2024-06-07_11-10-24.png)
+#### 	5.3 实例![](.\assets\Snipaste_2024-06-07_11-10-24.png)
 
 ![](.\assets\Snipaste_2024-06-07_11-11-18.png)
 
 
 
-**6. redux ** **中间件**
+### **6. redux 中间件**
 
 在redux里，action仅仅是携带了数据的普通js对象。action creator返回的值是这个action类型的
 
@@ -605,6 +793,8 @@ export default function thunkMiddleware({ dispatch, getState }) {
 行next方法(下一步处理)，相当于中间件没有做任何事。如果action是function，则先执行action，
 
 action的处理结束之后，再在action的内部调用dispatch。
+
+#### 6.0 常用异步中间件
 
 **ii.** **常用异步中间件：**
 
@@ -635,7 +825,7 @@ const getComingSoon = ()=>{
     }
 ```
 
-**7. Redux DevTools Extension**
+#### **6.1 Redux DevTools Extension**
 
 https://github.com/zalmoxisus/redux-devtools-extension
 
@@ -647,7 +837,7 @@ const store = createStore(reducer, /* preloadedState, */ composeEnhancers())
 export default store
 ```
 
-**十二 ** **. react-redux**
+#### 6.2 **react-redux**
 
 1 **容器组件与 ** **UI** **组件**
 
@@ -750,20 +940,31 @@ import MyControlComponent from "./Child"
 //不会显示组件的具体内容，如果data不为null, 就显示真实组件信息。
 ```
 
-**6. Redux** **持久化**
+#### **6.3 Redux** **持久化**
+
+使用场景：在使用redux的时候我们会发现state中的数据一旦刷新页面就会返回初始化状态，vue中的vuex也是如此，无法持久保存vuex中state数据的状态。
+
+**原因**：数据保存在内存中，刷新页面后，数据重置，所以，状态会返回初始化状态。
+
+**解决方案**：数据持久化。简单地说，就是**把数据保存在本地存储中**，当然，需要做好数据的校验保密工作。
+
+一些复杂的重要数据，需要和后端共同校验，比如token。
+
+想要在redux中解决这个问题，我们可以采用数据持久化插件`redux-persist`
 
 ```js
 import {persistStore, persistReducer} from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 const persistConfig = {
+   {
     key: 'kerwin',
     storage: storage,
     //localStorage: import storage from 'redux-persist/lib/storage'
     //sessionStorage: import storageSession from 'redux-persist/lib/storage/session'
     stateReconciler: autoMergeLevel2
     //控制在本地存储中，新老状态怎么合并，覆盖？或者合并？
-    };
+   };
     //改造reducer
     const myPersistReducer = persistReducer(persistConfig, reducer)
     //改造store
@@ -774,6 +975,220 @@ const persistConfig = {
     <PersistGate loading={null} persistor={persistor}>
     	...
 	</PersistGate>
+}
+```
+
+#### 6.4 redux-soga
+
+​	`redux-saga` 是一个用于管理应用程序 Side Effect（副作用，例如异步获取数据，访问浏览器缓存等）的 library，它的目标是让副作用管理更容易，执行更高效，测试更简单，在处理故障时更容易。
+
+​	可以想像为，一个 saga 就像是应用程序中一个单独的线程，它独自负责处理副作用。 `redux-saga` 是一个 redux 中间件，意味着这个线程可以通过正常的 redux action 从主应用程序启动，暂停和取消，它能访问完整的 redux state，也可以 dispatch redux action。
+
+api地址：https://redux-saga-in-chinese.js.org/docs/api/
+
+##### 安装
+
+```sh
+$ npm install --save redux-saga
+```
+
+或
+
+```sh
+$ yarn add redux-saga
+```
+
+建立 store.js
+
+```js
+import { createStore, applyMiddleware } from 'redux'
+import reducer from './reducer'
+import createSagaMiddleware from 'redux-saga'
+import watchSaga from './saga'
+// create the saga middleware
+const sagaMiddleware = createSagaMiddleware()
+
+// mount it on the Store
+const store = createStore(reducer, applyMiddleware(sagaMiddleware))
+
+// mySaga 自己写
+
+// then run the saga
+sagaMiddleware.run(watchSaga)
+
+export default store
+```
+
+reucer.js
+
+```js
+function reducer(prevState = {
+    list1:[],
+    list2:[]
+}, action = {}){
+    let newState = {...prevState}
+    switch(action.type){
+        case 'change-list1':
+            console.log(action.payload)
+            newState.list1 = action.payload
+             return newState
+        case 'change-list2':
+            console.log(action.payload)
+            newState.list2 = action.payload
+            return newState
+        default:
+            return prevState
+    }
+    // return prevState
+}
+export default reducer
+```
+
+App.js
+
+```js
+import React, { Component } from 'react'
+import store from './redux/store'
+
+export class App extends Component {
+  render() {
+    return (
+      <div>
+        <button onClick={()=>{
+          if (store.getState().list1.length == 0){
+            // dispatch
+            store.dispatch({
+              type: 'get-list1'
+            })
+          }else {
+            console.log("缓存1", store.getState().list1)
+          }
+        }}>异步缓存1</button>
+         <button onClick={()=>{
+          if (store.getState().list2.length == 0){
+            // dispatch
+            store.dispatch({
+              type: 'get-list2'
+            })
+          }else {
+            console.log("缓存2", store.getState().list2)
+          }
+        }}>异步缓存2</button>
+      </div>
+    )
+  }
+}
+
+```
+
+saga.js
+
+```js
+import { call, put, takeEvery, takeLatest, take, fork, all} from 'redux-saga/effects'
+import watchSaga1 from './saga/watchSaga1'
+import watchSaga2 from './saga/watchSage2'
+function* watchSaga(action){
+   yield all([
+    call(watchSaga1),
+    call(watchSaga2)
+  ])
+}
+export default watchSaga
+// watch-saga1
+import { call, put, takeEvery, takeLatest, take, fork} from 'redux-saga/effects'
+
+function* watchSaga1(action){
+    console.log(action)
+    // while (true){
+    //     // take 监听 组件发来的action
+    //     yield take('get-list1')
+    //     // fork 同步执行异步函数
+    //     yield fork(getList1)
+    // }
+    yield takeEvery("get-list1", getList1)
+}
+function* getList1(){
+    // 异步处理
+    // 使用call函数发布异步请求
+    // 还可以链式调用
+    let res1 = yield call(getlistaction_1) //阻塞式调用fn 
+    let res2 = yield call(getlistaction_2 ,res1) 
+    yield put({
+        type: 'change-list1',
+        payload: res2
+    })
+    // put函数发出新的action 非阻塞式
+
+}
+function getlistaction_1(){
+    return new Promise((res)=>{
+        res(['111', '222', '333'])
+    })
+}
+function getlistaction_2(data){
+    return new Promise((res)=>{
+        res([...data, '999', '0000'])
+    })
+}
+export default watchSaga1
+// watchSaga2
+import { call, put, takeEvery, takeLatest, take, fork} from 'redux-saga/effects'
+
+function* watchSaga2(action){
+    console.log(action)
+    while (true){
+        // take 监听 组件发来的action
+        yield take('get-list2')
+        // fork 同步执行异步函数
+        yield fork(getList2)
+    }
+}
+function* getList2(){
+    // 异步处理
+    // 使用call函数发布异步请求
+    let res = yield call(getlistaction) //阻塞式调用fn
+
+    yield put({
+        type: 'change-list2',
+        payload: res
+    })
+    // put函数发出新的action 非阻塞式
+
+}
+function getlistaction(){
+    return new Promise((res)=>{
+        res(['111', '222', '333', '444'])
+    })
+}
+export default watchSaga2
+```
+
+##### 链式调用 
+
+```js
+function* getList1(){
+    // 异步处理
+    // 使用call函数发布异步请求
+    // 还可以链式调用
+    let res1 = yield call(getlistaction_1) //阻塞式调用fn 
+    let res2 = yield call(getlistaction_2 ,res1) 
+    yield put({
+        type: 'change-list1',
+        payload: res2
+    })
+    // put函数发出新的action 非阻塞式
+
+}
+function getlistaction_1(){
+    return new Promise((res)=>{
+        res(['111', '222', '333'])
+    })
+}
+function getlistaction_2(data){
+    return new Promise((res)=>{
+        res([...data, '999', '0000'])
+    })
+}
 ```
 
 ### 7 react + ts
@@ -975,10 +1390,11 @@ React 初学者经常会混淆 React 中的测试工具。React Testing Library 
 > <button> 元素的默认角色是 button。
 > <a> 元素（当有 href 属性时）的默认角色是 link。
 > <input> 元素（当 type 为 text 时）的默认角色是 textbox。
-> ------------------------------
+> ```html
+>
 > 对于 <li> 元素，其默认角色是 listitem。这是因为 <li> 元素通常用于定义列表项，而 listitem 角色正是用来表示这一点的。
 > 以下是一些常见HTML元素及其默认角色：
-> ```
+>
 > ```js
 > <ul> 和 <ol>：默认角色是 list
 > <li>：默认角色是 listitem
@@ -1161,6 +1577,4 @@ describe('sum', () => {
     });
 });
 ```
-
-### 9 redux-soga
 
