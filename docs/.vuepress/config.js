@@ -108,7 +108,8 @@ export default defineUserConfig({
         link: '/other/',
         children: [
           { text: '阅读', link: '/other/ruanzhishi/reading/' },
-          { text: '音乐', link: '/other/ruanzhishi/music/' }
+          { text: '音乐', link: '/other/ruanzhishi/music/' },
+             { text: '其他', link: '/other/ruanzhishi/other/' }
         ]
       },
       {
