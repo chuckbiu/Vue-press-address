@@ -6948,3 +6948,576 @@ npm run dev
   > 过滤器虽然这看起来很方便，但它需要一个自定义语法，打破大括号内表达式是 “只是 JavaScript” 的假设，这不仅有学习成本，而且有实现成本！建议用方法调用或计算属性去替换过滤器。
 
 - ​    ......z
+
+
+##  二. 进阶
+## 创建项目
+
+- 使用Vite工具来开发 https://cn.vitejs.dev/
+- 使用vite最新版本，用vue-ts模板，创建名称为vue3-app的项目 `npm create vite@latest vue3-app -- --template vue-ts`
+- 创建项目后，cd进入目录，npm i安装依赖，npm run dev启动项目
+
+## VS Code扩展
+
+- Vue2使用Vetur
+- Vue3使用Vue Official
+- 写Vue3项目时需要禁用Vetur，启用Vue Official
+
+## Vue3的setup组合式API
+
+- Vue2用选项式API，Vue3仍然支持选项式API
+
+- Vue3增加了setup钩子函数，会在beforeCreate之前执行，setup中没有this
+
+- Vue3所有的逻辑都可以写在setup函数中，return返回供视图使用，这种编程方式叫做组合式API
+
+  ```js
+  <template>
+      <button @click="fn">{{ a }}</button>
+  </template>
+  <script>
+  import { onMounted } from 'vue';
+  export default {
+      setup() {
+          const a = 123;
+          const fn = () => console.log('函数执行了');
+          onMounted(() => console.log('已挂载'));
+          return {
+              a,
+              fn
+          };
+      }
+  };
+  </script>
+  ```
+
+- Vue3提供了语法糖`<script setup>`，简化了代码的编写
+
+  ```js
+  <script setup lang="ts">
+  import { onMounted } from 'vue';
+  const a = 123;
+  const fn = () => console.log('函数执行了');
+  onMounted(() => console.log('已挂载'));
+  </script>
+  ```
+
+## 定义响应式数据
+
+- ref和reactive都需要导入
+- 任何数据类型都可以用ref定义，在setup中读取/设置ref类型数据时需要加.value，在视图插值绑定中读取/设置ref类型数据都不需要加.value
+- reactive只能用来定义数组、对象等复合类型，不需要加.value
+- ref类型的数据不允许不带.value赋值，reactive类型的数据不允许整体赋值，否则会丢失响应式
+- 在项目中，简单数据类型用ref定义；数组和对象一般情况下用reactive定义；但是如果数组和对象需要整体赋值，就需要在ref中定义
+
+## 方法
+
+- 普通函数和箭头函数都可以使用
+
+## 计算属性
+
+- computed需要导入
+- computed是个函数，参数也是个函数，参数函数需要有返回值
+- computed函数会返回计算属性的值
+- 计算属性是个类似ref的响应式值，在setup中读取时需要加.value
+- 计算属性还可以被计算
+
+## 侦听器
+
+- watch需要导入
+
+- watch是个函数，第一个参数是要监听的数据源，第二个参数是回调函数（数据源发生变化后执行的函数），回调函数有新值和旧值两个参数
+
+- 数据源
+
+  1. ref或reactive类型的数据/状态
+
+  2. 计算属性computed
+
+  3. 监听reactive类型对象某个属性的变化，数据源要写成函数形式
+
+     ```js
+     watch(() => stu.age, (newVal, oldVal) => {
+         console.log('stu.age发生变化了', newVal, oldVal);
+     });
+     ```
+
+  4. 数据源可以写成数组，数组元素是前三种情况的组合
+
+- Vue3对reactive类型对象默认就是深度监听
+
+## watchEffect
+
+- watchEffect需要导入
+- watchEffect是个函数，参数是个副作用函数/回调函数
+- 回调函数会在组件初次渲染完成后立即执行一次，相当于watch设置了immediate为true
+- 如果回调函数中使用了响应式数据（ref.value, reactive的属性, computed.value），当这些数据发生变化时，回调函数还会再次执行
+- 回调函数中使用了响应式数据也称作依赖
+
+## 生命周期
+
+- Vue3将销毁的生命周期名称由destroy改成了unmount
+- setup中没有创建前后的两个钩子函数
+- setup生命周期的方法前面需要加on，并且需要导入
+- setup组合式API中可以使用onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted
+- 上面这些函数的参数就是生命周期执行到这个阶段时可以执行的函数
+- setup中在onMounted中请求接口
+
+## 父子组件关系
+
+- 父子组件通信
+- setup中，只需要导入组件后就可以直接使用不需要注册
+- 父子关系的形成：在A组件中导入B组件，然后在A组件中使用B组件`<B />`，这样的情况，就把A叫做B的父组件，B称作A的子组件
+
+## 组件props的定义
+
+- 父组件通过props自定义属性将数据传入子组件
+
+- 子组件使用defineProps定义props，defineProps的参数使用数组定义需要传入的props属性名，defineProps不需要导入
+
+  ```js
+  <template>
+  <div class="son">
+      <h1>子组件</h1>
+      <p>{{ age }} - {{ name }}</p>
+  </div>
+  </template>
+  
+  <script setup lang="ts">
+  defineProps(['age', 'name']);
+  </script>
+  ```
+
+- 子组件在script中如果需要使用props，需要利用defineProps的返回值，defineProps返回一个对象，对象中包含父组件传入的所有props
+
+- 定义props时规定每个props的类型，使用Vue2的语法，defineProps的参数使用对象
+
+  ```js
+  defineProps({
+      age: {
+          type: Number,
+          required: true
+      },
+      name: {
+          type: String,
+          required: true
+      }
+  });
+  ```
+
+- 使用TS的泛型约束props对象的类型
+
+  ```js
+  // 直接约束类型
+  const props = defineProps<{
+      age: number;
+      name: string;
+  }>();
+  // 使用类型别名
+  type PropsType = {
+      age: number;
+      name: string;
+  };
+  const props = defineProps<PropsType>();
+  // 使用接口
+  interface IProps {
+      age: number;
+      name: string;
+  }
+  const props = defineProps<IProps>();
+  ```
+
+- 如果props中的属性需要设置默认值，Vue2语法中使用default定义，setup中使用withDefaults设置props的默认值
+
+  ```js
+  const props = withDefaults(defineProps<IProps>(), {
+      name: '默认名字'
+  });
+  ```
+
+## 组件的$emit的定义
+
+- 子组件通过$emit将数据传给父组件，子组件通过this.$emit(事件名称, 传递的数据)派发/触发/发生/抛出自定义事件，父组件通过`@事件名称`监听该事件的发生，监听到之后回调函数会被调用，回调函数的参数就是`传递的数据`
+
+- 子组件使用defineEmits函数执行来返回$emit，defineEmits不需要导入
+
+  ```js
+  const emit = defineEmits();
+  function fn() {
+      emit('change', '传给父组件的数据');
+      emit('add', 123);
+  }
+  ```
+
+- 约束子组件自定义事件的名称和传递数据的格式
+
+  ```js
+  // 只能约束事件名称
+  const emit = defineEmits(['change', 'add']);
+  ```
+
+- 使用defineEmits的泛型参数约束自定义事件对象的类型
+
+  ```js
+  const emit = defineEmits<{
+      (e: 'change', data: string): void;
+      (e: 'add', data: number): void;
+  }>();
+  ```
+
+- Vue3.3+版本中，增加了一中可选的、更简洁的语法
+
+  ```js
+  const emit = defineEmits<{
+      change: [data: string];
+      add: [data: number];
+  }>();
+  ```
+
+## 表格分页搜索
+
+- 组件：element的el-form表单、el-table表格、el-pagination分页
+- 数据：表格展示的列表list、当前页码page、每页条数pageSize、搜索条件params、数据总条数total、加载中loading
+- 列表接口：参数page、pageSize、params，返回值list
+- 逻辑：onMouted中调用接口获取第一页数据list和总条数total；请求发出前开启loading，响应返回后结束loading；在分页组件中切换页码或者每页条数时，再次调用接口；搜索时params变化，将页码page恢复成第一页，再次调用接口
+- 分/翻页组件el-pagination：props传入current-page当前页码、page-size每页条数、total总条数，通过emit事件传出@current-change、@size-change
+- 搜索：额外定义表单绑定的对象formData，点击搜索按钮时，将表单绑定的数据formData赋值给搜索条件params，将页码page设置为1，再次调用接口
+
+## el-pagination分页组件
+
+- layout控制展示的子元素/控件：total总数, sizes每页条数的切换, prev左箭头, pager数字页码, next右箭头, jumper输入回车跳转
+- page-sizes每页条数切换的备选项
+
+## el-table表格的作用域插槽
+
+```
+<el-table-column label="用户名">
+<template #default="scope">
+    // scope.$index是行的下标，scope.row行的数据
+</template>
+</el-table-column>
+```
+
+## VueRouter4
+
+- 导航守卫
+- 动态路由
+
+## element组件库
+
+- Vue2使用Element UI
+
+- Vue3使用Element Plus
+
+- https://element-plus.org/zh-CN/#/zh-CN
+
+- 安装`npm install element-plus`
+
+- 完整引入
+
+  ```
+  import ElementPlus from 'element-plus';
+  import 'element-plus/dist/index.css';
+  app.use(ElementPlus);
+  ```
+
+## SASS
+
+- 安装`npm i sass -D`
+- LESS将{}和;去掉就是SASS
+- SASS使用缩进表示父子嵌套
+- &符号表示父标签的引用
+
+## Object.assign
+
+- 将第二参数开始的对象中的属性复制到第一个参数对象中
+
+- 后面对象中的属性和前面对象中的属性同名时，后面会覆盖前面的
+
+  ```
+  const obj1 = { a: 1 };
+  const obj2 = { a: 2, b: 4 };
+  const obj3 = { a: 3, c: 5 };
+  Object.assign(obj1, obj2, obj3); // { a: 3, b: 4, c: 5 }
+  ```
+
+## slot插槽
+
+- 子组件使用slot定义插槽，父组件使用子组件时，给子组件写的子标签会渲染到slot位置
+
+- 插槽定义时，可以设置默认内容
+
+  ```
+  <slot>默认插槽内容</slot>
+  ```
+
+- 子组件可以定义多个插槽，使用命名/具名插槽，使用name给slot命名
+
+  ```
+  // 子组件定义
+  <slot name="head" />
+  
+  // 父组件传入
+  <Com>
+  <template v-slot:head>
+      <h2>传给head的内容</h2>
+      <p>传给head的内容</p>
+  </template>
+  </Com>
+  ```
+
+- 默认插槽不需要写name，其实是省略的名称叫default
+
+- v-slot:可以缩写成#
+
+- 插槽内容只能访问父组件中的数据，不能直接访问子组件中的数据
+
+- 作用域插槽，将子组件中的数据送出来给父组件，在插槽内容使用
+
+  ```
+  // 子组件中在slot标签上绑定动态属性
+  <slot name="head" :a="123" :b="[1,2,3]" />
+  
+  // 在父组件中，使用v-slot:head="scope"或者#head="scope"语法得到scope对象，scope对象中包含了子组件传出的a和b属性
+  <Com>
+      <template v-slot:head="scope">
+          <h2>传给head的内容 - {{ scope.a }}</h2>
+          <p>传给head的内容</p>
+      </template>
+  </Com>
+  ```
+
+- 默认插槽如果使用作用域，default名称就不能省略了
+
+  ```
+  <template #default="scope">
+      <h2>默认插槽内容{{ scope.list }}</h2>
+      <p>默认插槽内容</p>
+  </template>
+  ```
+
+## rem单位
+
+- 相对于页面根元素（HTML元素）字体的比例/倍数
+
+- 假设HTML元素上的字体大小设置为100px，页面中一个div标注宽度width为1.2rem，最终该div显示的宽度就是100x1.2=120px
+
+- 因为具体的设备宽度不确定，需要在页面中动态计算根字体大小，屏幕宽度 / 设计稿宽度 * 基准字体大小（量取尺寸后除的数字，可以使用1、10、100）
+
+- document.documentElement就是获取的HTML元素
+
+  ```
+  <script>
+    function setFontSize() {
+      // 基准字体大小为100，设计稿是750
+      document.documentElement.style.fontSize = document.documentElement.clientWidth / 750 * 100 + 'px';
+    }
+    setFontSize();
+    window.addEventListener('resize', setFontSize);
+  </script>
+  ```
+
+- 在body上设置font-size: 16px恢复字体影响
+
+- 配置webpack/vite插件，postcss-pxtorem，实现自动将px转成rem单位
+
+  ```
+  import { defineConfig } from 'vite';
+  import vue from '@vitejs/plugin-vue';
+  import pxtorem from 'postcss-pxtorem';
+  
+  // https://vitejs.dev/config/
+  export default defineConfig({
+      plugins: [vue()],
+      css: {
+          postcss: {
+              plugins: [pxtorem({
+                  rootValue: 100, // 基准字体大小
+                  propList: ['*'], // 需要转换的属性，*表示所有属性
+                  selectorBlackList: ['body'], // 忽略不转换的选择器
+                  replace: true, // rem样式替换掉原来的px样式
+                  exclude: /node_modules/i // 排除node_modules目录
+              })]
+          }
+      }
+  });
+  ```
+
+## vite开发工具的配置
+
+- 项目根目录下vite.config.ts配置文件
+
+## TS类型也支持ES6的模块化导入导出
+
+```
+// 导出
+export interface Item {
+  name: string;
+  info: string;
+  checked: boolean;
+}
+export interface Menu {
+  name: string;
+  list: Item[];
+}
+
+// 导入，导入时可以在类型前加type
+import { type Menu } from './types';
+```
+
+## 原生JS事件
+
+- 事件（类型有：click点击、input输入、keyup键盘抬起、mouseenter鼠标移入）
+- 回调，回调函数，事件的处理函数，事件被触发时调用/执行的逻辑，事件发生时要做的事情
+- 事件对象，参数，事件发生时相关的信息（type事件类型，
+  target触发该事件的DOM元素），回调函数的参数，事件发生后执行回调函数时，传过来的默认参数对象
+
+```
+<input />
+
+const ipt = document.querySelector('input');
+// 监听input框的input事件，当事件发生时，就会执行后面的回调函数，执行回调函数时会将事件对象event作为参数传入
+// DOM0级的事件监听
+ipt.oninput = event => {
+    console.log(event.target.value);
+};
+// DOM2级的事件监听
+ipt.addEventListener('input', event => {
+   console.log(event.target.value);
+});
+```
+
+## $event
+
+- Vue在DOM元素上监听原生事件时，回调函数的默认参数是事件对象event；有些情况下需要给回调函数传递其他的参数，如果仍然需要使用事件对象的话，可以使用$event表示
+
+  ```js
+  <div @click="onClick" />
+  <div @click="onClick($event)" />
+  <div @click="e => onClick(e)" />
+  
+  function onClick(event: MouseEvent) {
+    console.log('事件对象：', event);
+  }
+  ```
+
+- 自定义组件中，父组件监听子组件中传出的自定义事件，回调函数的默认参数就是子组件送出来的数据；有些情况下需要给回调函数传递额外的参数，可以使用$event表示子组件送出来的数据
+
+  ```js
+  // 子组件
+  <button
+      @click="emit('send-data', '🍉🍉🍉')"
+  >向父组件传递数据</button>
+  
+  // 父组件
+  <MyComponent @send-data="onSendData" />
+  <MyComponent @send-data="onSendData($event, 123)" />
+  <MyComponent @send-data="v => onSendData(v, 123)" />
+  
+  const onSendData = (data: string, v = 0) => {
+      console.log('从子组件接收到的数据', data, v);
+  };
+  ```
+
+## $ref
+
+- Vue2中使用this.$refs来获取原生DOM元素或者子组件的实例
+
+- setup中获取DOM：先定义一个ref类型的变量，将其绑定在HTML标签的ref属性上
+
+  ```
+  <template>
+  <p ref="pRef">文本</p>
+  <button @click="getDOM">获取p的DOM</button>
+  </template>
+  
+  <script setup lang="ts">
+  import { ref } from 'vue';
+  const pRef = ref<HTMLParagraphElement | null>(null);
+  const getDOM = () => console.log(pRef.value);
+  </script>
+  ```
+
+- setup中获取子组件实例：先定义一个ref类型的变量，将其绑定在子组件标签的ref属性上
+
+  ```
+  // 子组件内部需要使用defineExpose定义允许父组件访问的属性和方法
+  defineExpose({
+      a: 1,
+      b: () => console.log('子组件内暴露的方法被执行了')
+  });
+  
+  // 父组件
+  <MyComponent ref="myComRef" />
+  <button @click="getMyCom">获取MyComponent的组件实例</button>
+  
+  const myComRef = ref<InstanceType<typeof MyComponent> | null>(null);
+  const getMyCom = () => {
+      console.log(myComRef.value);
+      console.log(myComRef.value!.a);
+      myComRef.value!.b();
+  };
+  ```
+
+## $nextTick
+
+- Vue中修改状态/数据后，DOM视图的更新是异步的
+- 如果需要在修改数据后，获取更新之后的DOM，需要把逻辑放在nextTick中
+
+## 同步和异步
+
+- 下面代码打印顺序是1、3、2，定时器的延迟时间设置为0，逻辑仍然会放在最后执行
+- setTimeout是异步逻辑，异步代码会在同步代码执行完成后再执行
+
+```
+console.log(1);
+setTimeout(() => console.log(2), 0);
+console.log(3);
+```
+
+## v-model
+
+- v-model是缩写/语法糖
+
+- 原生表单项的双向绑定
+
+  ```vue
+  <input
+      :value="val"
+      @input="val = $event.target.value"
+  />
+  // 对于原生表单项来说，v-model相当于上面两句的缩写
+  <input v-model="val" />
+  ```
+
+- 自定义组件上的双向绑定
+
+  ```vue
+  // 子组件定义，需要将props命名成modelValue，派发的自定义事件名称命名成update:modelValue
+  <template>
+  <div>
+      <p>子组件 - {{ modelValue }}</p>
+      <button
+          @click="emit('update:modelValue', 'xyz')"
+      >修改父组件传进来的值</button>
+  </div>
+  </template>
+  <script setup lang="ts">
+  defineProps<{
+      modelValue: string;
+  }>();
+  const emit = defineEmits<{
+      (e: 'update:modelValue', data: string): void;
+  }>();
+  </script>
+  
+  // 父组件使用
+  <MyInput
+      :model-value="val"
+      @update:model-value="val = $event"
+  />
+  // 上面两句话就可以缩写成下面
+  <MyInput v-model="val" />
+  ```
+
+## !!! Vue组件中严禁修改props，只能emit出去自定义事件通知父组件修改 !!!

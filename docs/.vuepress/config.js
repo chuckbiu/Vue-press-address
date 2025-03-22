@@ -47,12 +47,40 @@ export default defineUserConfig({
             ]
           },
           {
+            text: '路由',
+            link: '/article/web/',
+            children: [
+              {
+                text: 'vue-router',
+                link: '/article/web/router/vue/'
+              },
+              {
+                text: 'react-router',
+                link: '/article/web/router/React/'
+              }
+            ]
+          },
+          {
             text: 'js',
             link: '/article/js/',
             children: [
               {
                 text: 'JavaScript进阶',
                 link: '/article/js/js高级知识/'
+              },
+            ]
+          },
+          {
+            text: 'store',
+            link: '/article/store/',
+            children: [
+              {
+                text: 'vuex',
+                link: '/article/store/vuex/'
+              },
+              {
+                text: 'rudex',
+                link: '/article/store/rudex/'
               },
             ]
           },
